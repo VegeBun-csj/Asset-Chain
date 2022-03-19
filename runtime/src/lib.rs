@@ -60,6 +60,8 @@ use xcm_executor::{Config, XcmExecutor};
 /// Import the template pallet.
 pub use pallet_template;
 
+pub use cumulus_ping;
+
 /// Alias to 512-bit hash when used in the context of a transaction signature on the chain.
 pub type Signature = MultiSignature;
 
@@ -451,11 +453,22 @@ match_type! {
 	};
 }
 
+// 配置parachain之间可以进行消息传递
+match_type! {
+	pub type SpecParachain: impl Contains<MultiLocation> = {
+		// Proof parachain
+		MultiLocation {parents: 1, interior: X1(Parachain(3000))} |
+		// Asset parachain
+		MultiLocation {parents: 1, interior: X1(Parachain(4000))} 
+	};
+}
+
 pub type Barrier = (
 	TakeWeightCredit,
 	AllowTopLevelPaidExecutionFrom<Everything>,
 	AllowUnpaidExecutionFrom<ParentOrParentsExecutivePlurality>,
 	// ^^^ Parent and its exec plurality get free execution
+	AllowUnpaidExecutionFrom<SpecParachain>,
 );
 
 pub struct XcmConfig;
@@ -587,9 +600,23 @@ impl pallet_collator_selection::Config for Runtime {
 	type WeightInfo = ();
 }
 
+
+impl pallet_sudo::Config for Runtime {
+	type Call = Call;
+	type Event = Event;
+}
+
 /// Configure the pallet template in pallets/template.
 impl pallet_template::Config for Runtime {
 	type Event = Event;
+}
+
+/// Configure the cumulus_ping
+impl cumulus_ping::Config for Runtime {
+	type Event = Event;
+	type Origin = Origin;
+	type Call = Call;
+	type XcmSender = XcmRouter;
 }
 
 // Create the runtime by composing the FRAME pallets that were previously configured.
@@ -606,6 +633,7 @@ construct_runtime!(
 		} = 1,
 		Timestamp: pallet_timestamp::{Pallet, Call, Storage, Inherent} = 2,
 		ParachainInfo: parachain_info::{Pallet, Storage, Config} = 3,
+		Sudo: pallet_sudo::{Pallet, Call, Storage, Config<T>, Event<T>},
 
 		// Monetary stuff.
 		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>} = 10,
@@ -626,6 +654,7 @@ construct_runtime!(
 
 		// Template
 		TemplatePallet: pallet_template::{Pallet, Call, Storage, Event<T>}  = 40,
+		PingPong: cumulus_ping::{Pallet, Call, Storage, Event<T>},
 	}
 );
 
