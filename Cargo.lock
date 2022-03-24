@@ -5682,6 +5682,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-xserver"
+version = "4.0.0-dev"
+dependencies = [
+ "cumulus-pallet-xcm",
+ "cumulus-primitives-core",
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+ "xcm",
+]
+
+[[package]]
 name = "parachain-Asset-node"
 version = "0.1.0"
 dependencies = [
@@ -5779,6 +5797,7 @@ dependencies = [
  "pallet-transaction-payment",
  "pallet-transaction-payment-rpc-runtime-api",
  "pallet-xcm",
+ "pallet-xserver",
  "parachain-info",
  "parity-scale-codec",
  "polkadot-parachain",

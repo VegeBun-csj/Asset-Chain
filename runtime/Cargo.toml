@@ -26,6 +26,8 @@ smallvec = "1.6.1"
 pallet-template = { path = "../pallets/template", default-features = false }
 # Local Dependencies
 cumulus-ping = { path = "../pallets/ping", default-features = false }
+# xserver
+pallet-xserver = {path = "../pallets/xserver", default-features = false}
 
 # Substrate Dependencies
 ## Substrate Primitive Dependencies

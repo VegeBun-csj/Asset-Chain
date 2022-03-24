@@ -62,6 +62,8 @@ pub use pallet_template;
 
 pub use cumulus_ping;
 
+pub use pallet_xserver;
+
 /// Alias to 512-bit hash when used in the context of a transaction signature on the chain.
 pub type Signature = MultiSignature;
 
@@ -619,6 +621,11 @@ impl cumulus_ping::Config for Runtime {
 	type XcmSender = XcmRouter;
 }
 
+impl pallet_xserver::Config for Runtime {
+	type Event = Event;
+	type Origin = Origin;
+}
+
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
 	pub enum Runtime where
@@ -655,6 +662,7 @@ construct_runtime!(
 		// Template
 		TemplatePallet: pallet_template::{Pallet, Call, Storage, Event<T>}  = 40,
 		PingPong: cumulus_ping::{Pallet, Call, Storage, Event<T>},
+		Xserver: pallet_xserver::{Pallet, Call, Storage, Event<T>},
 	}
 );
 
